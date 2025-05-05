@@ -7,27 +7,43 @@ import rx.Subscriber;
 public class producingConsuminRX {
 
     public static void main(String[] args) {
+        /*
+         * Observable: Representa una fuente de datos reactiva que emite eventos.
+         * Esta implementación utiliza una clase anónima que implementa la interfaz
+         * Observable.OnSubscribe para definir el comportamiento cuando un
+         * Subscriber se suscriba.
+         */
         Observable<String> observableWithClassAnonymous = Observable.create(
                 new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> sub) {
-                        sub.onNext("Hello, reactive world!");
+                        sub.onNext("Esto se emitirá apenas aparezca el subscriptor!");
                         sub.onCompleted();
                     }
                 }
         );
 
+        /*
+         * Observable implementado con expresiones lambda (Java 8+).
+         * Esta implementación es equivalente a la anterior pero con sintaxis más concisa.
+         * Emitirá 10 elementos en secuencia y luego se completará.
+         */
         Observable<String> observableWithLambda = Observable.create(sub -> {
             int record = 1;
             while (record <= 10){
-                sub.onNext("Hello, reactive world!: " + record );
+                sub.onNext("Esto se emitirá apenas aparezca el subscriptor!: " + record );
                 record ++;
             }
-
-
             sub.onCompleted();
         });
 
+        /*
+         * Subscriber: Define cómo reaccionar a los eventos emitidos por el Observable.
+         * Implementa tres métodos principales que corresponden al patrón de programación reactiva:
+         * - onNext: Maneja cada elemento emitido por el Observable
+         * - onError: Maneja cualquier error que ocurra durante el proceso
+         * - onCompleted: Se ejecuta cuando la secuencia termina normalmente
+         */
         Subscriber<String> subscriber = new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -45,6 +61,11 @@ public class producingConsuminRX {
             }
         };
 
+        /*
+         * Suscripción: Este es el punto donde se establece la conexión entre
+         * el Observable y el Subscriber. Al suscribirse, el Observable comenzará
+         * a emitir eventos que serán procesados por el Subscriber.
+         */
         observableWithLambda.subscribe(subscriber);
     }
 }
