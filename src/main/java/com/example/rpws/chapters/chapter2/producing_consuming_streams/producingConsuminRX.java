@@ -4,6 +4,10 @@ package com.example.rpws.chapters.chapter2.producing_consuming_streams;
 import rx.Observable;
 import rx.Subscriber;
 
+import java.util.Collections;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class producingConsuminRX {
 
     public static void main(String[] args) {
@@ -30,9 +34,9 @@ public class producingConsuminRX {
          */
         Observable<String> observableWithLambda = Observable.create(sub -> {
             int record = 1;
-            while (record <= 10){
-                sub.onNext("Esto se emitirá apenas aparezca el subscriptor!: " + record );
-                record ++;
+            while (record <= 10) {
+                sub.onNext("Esto se emitirá apenas aparezca el subscriptor!: " + record);
+                record++;
             }
             sub.onCompleted();
         });
@@ -67,6 +71,19 @@ public class producingConsuminRX {
          * a emitir eventos que serán procesados por el Subscriber.
          */
         observableWithLambda.subscribe(subscriber);
+
+        //otros ejemplos transformado listas típicas
+
+        Observable.just("1", "2", "3", "4");
+        Observable.from(new String[]{"A", "B", "C"});
+        Observable.from(Collections.emptyList());
+
+        Observable<String> hello = Observable.fromCallable(() -> "Hello ");
+        Future<String> future = Executors.newCachedThreadPool().submit(() -> "World");
+        Observable<String> world = Observable.from(future);
+
+        Observable.concat(hello, world, Observable.just("!")).forEach(System.out::print);
+
     }
 }
 
